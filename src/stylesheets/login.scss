@@ -1,0 +1,80 @@
+// login.scss
+@import "bootstrap/scss/functions"; // 必須
+@import "bootstrap/scss/variables"; // 如果有需要覆蓋變數
+@import "bootstrap/scss/mixins"; // 方便用 mixins
+@import "bootstrap/scss/bootstrap"; // Bootstrap 核心
+
+// 登入頁背景
+.login-page {
+  height: 100vh;
+  background: #fffcfc;
+background: linear-gradient(151deg,rgba(255, 252, 252, 1) 0%, rgba(122, 230, 216, 0.55) 49%, rgba(0, 72, 189, 0.63) 100%);
+
+  .login-card {
+    width: 70%;
+    max-width: 1200px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 12px 12px 10px 0px rgb(0 0 0 / 44%);
+    
+  }
+
+  // 左側藍色區塊
+  .left-panel {
+    padding: 60px;
+    color: #fff;
+    background: linear-gradient(180deg, #1e73d8, #0b2a7a);
+    position: relative;
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 28px;
+    }
+
+    .brand-desc {
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    button {
+      border-radius: 20px;
+      padding: 6px 16px;
+    }
+
+    // 底部圓弧裝飾（模仿設計）
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -50px;
+      left: -50px;
+      width: 200px;
+      height: 200px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+  }
+
+  // 右側表單
+  .right-panel {
+    padding: 60px;
+
+    .form-wrapper {
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    input.form-control {
+      border-radius: 30px;
+      padding: 10px 16px;
+      border: 1px solid #eee;
+    }
+
+    .btn-primary {
+      border-radius: 30px;
+      padding: 10px;
+      background: linear-gradient(90deg, #1e73d8, #3aa0ff);
+      border: none;
+    }
+  }
+}
