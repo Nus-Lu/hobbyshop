@@ -1,5 +1,24 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect } from "react";
 function Dashboard() {
+    const navigate = useNavigate()
+    const logout = () => {
+        document.cookie = `hexToken=;`;
+        navigate('/login');
+    }
+    //取出token
+    const token = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('hexToken='))
+        ?.split('=')[1];
+    useEffect(() => {
+        if (!token) {
+            navigate('/login');
+        } else {
+            axios.defaults.headers.common["Authorization"] = token;
+        }
+    }, [navigate, token])
     return (
         <>
             <nav className="navbar navbar-expand-lg bg-dark">
@@ -21,7 +40,7 @@ function Dashboard() {
                     <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <button type="button" className="btn btn-sm btn-light">
+                                <button type="button" className="btn btn-sm btn-light" onClick={logout}>
                                     登出
                                 </button>
                             </li>

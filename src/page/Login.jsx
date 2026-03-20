@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 function Login() {
     const navigate = useNavigate()
     const [data, setData] = useState({ username: '', password: '', });//存登入寫的帳號密碼
-    const [loginState, setLoginState] = useState()//存登入狀態
+    const [loginState, setLoginState] = useState({})//存登入狀態
     const handleChange = (e) => {
         const { name, value } = e.target;
         setData({ ...data, [name]: value });
@@ -14,11 +14,10 @@ function Login() {
             const res = await axios.post(`/v2/admin/signin`, data);
             const { token, expired, success } = res.data;//解構取token
             document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
-            if (success) { navigate('/admin/products') }//登入成功後轉址
+            if (success) { navigate('/admin/products'); }//登入成功後轉址
         } catch (error) {
             setLoginState(error.response.data);
         }
-
     };
     return (
         <div className="login-page d-flex justify-content-center align-items-center">

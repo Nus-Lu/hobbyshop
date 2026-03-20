@@ -2,11 +2,6 @@ import { useEffect } from "react";
 import axios from "axios";
 function AdminProducts() {
     useEffect(() => {
-        const token = document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('hexToken='))
-            ?.split('=')[1];
-        axios.defaults.headers.common["Authorization"] = token;
         (async () => {
             const productResponse = await axios.get(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/products/all`);
             console.log(productResponse);//登入取商品資料
@@ -51,7 +46,7 @@ function AdminProducts() {
                     </li>
                     {[...new Array(5)].map((_, i) => (
                         <li className="page-item" key={`${i}_page`}>
-                            <a className={`page-link ${(i + 1 === 1) && 'active'}`} href="/"     >         {i + 1}             </a>
+                            <a className={`page-link ${(i + 1 === 1) && 'active'}`} href="/">{i + 1}</a>
                         </li>))}
                     <li className="page-item">
                         <a className="page-link" href="/" aria-label="Next">
