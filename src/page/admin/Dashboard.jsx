@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import axios from "axios";
+//import axios from "axios";
 import { useEffect } from "react";
 function Dashboard() {
     const navigate = useNavigate()
@@ -7,17 +7,9 @@ function Dashboard() {
         document.cookie = `hexToken=;`;
         navigate('/login');
     }
-    //取出token
-    const token = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('hexToken='))
-        ?.split('=')[1];
+    const token = document.cookie.split('; ').find((row) => row.startsWith('hexToken='))?.split('=')[1]; //取出token
     useEffect(() => {
-        if (!token) {
-            navigate('/login');
-        } else {
-            axios.defaults.headers.common["Authorization"] = token;
-        }
+        if (!token) { navigate('/login'); }
     }, [navigate, token])
     return (
         <>
@@ -26,15 +18,12 @@ function Dashboard() {
                     <p className="text-white mb-0">
                         HEX EATS 後台管理系統
                     </p>
-                    <button
-                        className="navbar-toggler"
-                        type="button"
+                    <button type="button" className="navbar-toggler"
                         data-bs-toggle="collapse"
                         data-bs-target="#navbarNav"
                         aria-controls="navbarNav"
                         aria-expanded="false"
-                        aria-label="Toggle navigation"
-                    >
+                        aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon" />
                     </button>
                     <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
@@ -52,16 +41,13 @@ function Dashboard() {
                 <div className="bg-light" style={{ width: '200px' }}>
                     <ul className="list-group list-group-flush">
                         <a className="list-group-item list-group-item-action py-3" to="/admin/products">
-                            <i className="bi bi-cup-fill me-2" />
-                            產品列表
+                            <i className="bi bi-cup-fill me-2" />產品列表
                         </a>
                         <a className="list-group-item list-group-item-action py-3" to="/admin/coupons">
-                            <i className="bi bi-ticket-perforated-fill me-2" />
-                            優惠卷列表
+                            <i className="bi bi-ticket-perforated-fill me-2" />優惠卷列表
                         </a>
                         <a className="list-group-item list-group-item-action py-3" to="/admin/orders">
-                            <i className="bi bi-receipt me-2" />
-                            訂單列表
+                            <i className="bi bi-receipt me-2" />訂單列表
                         </a>
                     </ul>
                 </div>

@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import axios from "axios";
+// import axios from "axios";
+import api from "../../api/api";
 function AdminProducts() {
     useEffect(() => {
         (async () => {
-            const productResponse = await axios.get(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/products/all`);
+            const productResponse = await api.get(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/products/all`);
             console.log(productResponse);//登入取商品資料
         })();
     }, [])

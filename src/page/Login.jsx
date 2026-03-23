@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-function Login() {
+function Login({ setLoading, setMessage }) {
     const navigate = useNavigate()
     const [data, setData] = useState({ username: '', password: '', });//存登入寫的帳號密碼
     const [loginState, setLoginState] = useState({})//存登入狀態
@@ -11,12 +11,16 @@ function Login() {
     }
     const submit = async () => {
         try {
+            setMessage("登入中..."); setLoading(true);// 開loading
             const res = await axios.post(`/v2/admin/signin`, data);
             const { token, expired, success } = res.data;//解構取token
             document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
-            if (success) { navigate('/admin/products'); }//登入成功後轉址
+            if (success) { navigate('/admin/products'); }//登入後轉址
         } catch (error) {
-            setLoginState(error.response.data);
+            const message = error.response?.data?.message || '登入失敗';
+            setLoginState({ message });
+        } finally {
+            setLoading(false);// 關loading
         }
     };
     return (
