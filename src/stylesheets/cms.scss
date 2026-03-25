@@ -1,0 +1,54 @@
+  :root {
+    --ripple-color: #3498db; /* 漣漪顏色 */
+  }
+
+  .ripple-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+  }
+
+  /* 中心點 */
+  .main-dot {
+    width: 20px;
+    height: 20px;
+    background-color: var(--ripple-color);
+    border-radius: 50%;
+    position: relative;
+  }
+
+  /* 漣漪共通樣式 */
+  .main-dot::before,
+  .main-dot::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    border: 2px solid var(--ripple-color);
+    border-radius: 50%;
+    opacity: 0;
+    animation: ripple-spread 3s infinite cubic-bezier(0.21, 0.53, 0.56, 0.8);
+  }
+
+  /* 第二層延遲 */
+  .main-dot::after {
+    animation-delay: 1s;
+  }
+
+  /* 若要第三層，可在此容器內多加一個 span 或調整動畫 */
+  @keyframes ripple-spread {
+    0% {
+      width: 20px;
+      height: 20px;
+      opacity: 0.8;
+    }
+    100% {
+      width: 150px;
+      height: 150px;
+      opacity: 0;
+    }
+  }

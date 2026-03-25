@@ -1,19 +1,43 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 // import axios from "axios";
 import api from "../../api/api";
-function AdminProducts() {
+import ProductModal from "../../components/ProductModal";
+import { Modal } from "bootstrap";
+
+function AdminProducts({ setLoading, setMessage }) {
+    const [products, setProducts] = useState([]);//商品
+    const [pagination, setPagination] = useState({});//分頁
+    //type 決定modal用途
+    const [type, setType] = useState('create');//edit
+    const [temProduct, setTemProduct] = useState({});//edit target data
+    const productModal = useRef(null);
     useEffect(() => {
-        (async () => {
-            const productResponse = await api.get(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/products/all`);
-            console.log(productResponse);//登入取商品資料
-        })();
-    }, [])
+        productModal.current = new Modal('#ProductModal', { backdrop: 'static', });//宣告Bootstrap Modal
+        getProduct();
+    }, []);
+    const getProduct = async () => {
+        setMessage("商品載入中..."); setLoading(true);// 開loading
+        const productResponse = await api.get(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/products`);
+        console.log(productResponse);//登入取商品資料
+        setProducts(productResponse.data.products);
+        setPagination(productResponse.data.pagination);
+        setLoading(false);// 關loading
+    };
+    const openProductModal = (type, product) => {
+        setType(type);
+        setTemProduct(product);
+        productModal.current.show();
+    };
+    const clsodProductModal = () => {
+        productModal.current.hide();
+    };
     return (
         <div className="p-3">
+            <ProductModal clsodProductModal={clsodProductModal} getProduct={getProduct} type={type} temProduct={temProduct} />
             <h3>產品列表</h3>
             <hr />
             <div className="text-end">
-                <button type="button" className="btn btn-primary btn-sm">建立新商品</button>
+                <button type="button" className="btn btn-primary btn-sm" onClick={() => openProductModal('create', {})}>建立新商品</button>
             </div>
             <table className="table">
                 <thead>
@@ -26,16 +50,20 @@ function AdminProducts() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>分類</td>
-                        <td>名稱</td>
-                        <td>價格</td>
-                        <td>啟用</td>
-                        <td>
-                            <button type="button" className="btn btn-primary btn-sm">編輯</button>
-                            <button type="button" className="btn btn-outline-danger btn-sm ms-2">刪除</button>
-                        </td>
-                    </tr>
+                    {products.map((product) => {
+                        return (
+                            <tr key={product.id}>
+                                <td>{product.category}</td>
+                                <td>{product.title}</td>
+                                <td>{product.price}</td>
+                                <td>{product.is_enabled ? '啟用' : '未啟用'}</td>
+                                <td>
+                                    <button type="button" className="btn btn-primary btn-sm" onClick={() => openProductModal('edit', product)}>編輯</button>
+                                    <button type="button" className="btn btn-outline-danger btn-sm ms-2">刪除</button>
+                                </td>
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </table>
             <nav aria-label="Page navigation example">

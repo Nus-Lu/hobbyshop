@@ -1,15 +1,23 @@
 import { Outlet, useNavigate } from "react-router-dom";
 //import axios from "axios";
 import { useEffect } from "react";
+import api from "../../api/api";
 function Dashboard() {
+    const token = document.cookie.split('; ').find((row) => row.startsWith('hexToken='))?.split('=')[1];
     const navigate = useNavigate()
     const logout = () => {
         document.cookie = `hexToken=;`;
         navigate('/login');
     }
-    const token = document.cookie.split('; ').find((row) => row.startsWith('hexToken='))?.split('=')[1]; //取出token
-    useEffect(() => {
-        if (!token) { navigate('/login'); }
+    useEffect(() => {//檢查token的有無與正確與否
+        if (!token) { return navigate('/login'); }
+        (async () => {
+            try {
+                await api.post('/v2/api/user/check')
+            } catch (error) {
+                if (!error.response.data.success) { navigate('/login'); }
+            }
+        })();
     }, [navigate, token])
     return (
         <>

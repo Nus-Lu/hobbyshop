@@ -20,7 +20,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login setLoading={setLoading} setMessage={setLoadingMessage} />} />
         <Route path="/admin" element={<Dashboard />}>
-          <Route path="products" element={<AdminProducts />} />
+          <Route path="products" element={<AdminProducts setLoading={setLoading} setMessage={setLoadingMessage}/>} />
         </Route>
       </Routes>
     </div>
