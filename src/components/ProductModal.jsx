@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ConfirmButton from "../page/ConfirmButton";
 // import axios from "axios";
 import api from "../api/api";
-function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
+function ProductModal({ closedProductModal, getProduct, type, temProduct }) {
     // Add Product
     const defaultData = { title: "", category: "", origin_price: 0, price: 0, unit: "", description: "", content: "", is_enabled: 0, imageUrl: "", imagesUrl: [], };
     const [tempData, setTempData] = useState(defaultData);//初始化
@@ -51,7 +51,7 @@ function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
             const res = await api[method](apiAdress, { data: tempData });
             console.log(res);
             getProduct();
-            clsodProductModal();
+            closedProductModal();
         } catch (error) {
             console.log(error);
         }
@@ -63,7 +63,7 @@ function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
                 <div className='modal-content'>
                     <div className='modal-header'>
                         <h1 className='modal-title fs-5' id='exampleModalLabel'>{type === 'edit' ? `編輯 ${tempData.title}` : '建立新商品'}</h1>
-                        <button type='button' className='btn-close' aria-label='Close' onClick={clsodProductModal} />
+                        <button type='button' className='btn-close' aria-label='Close' onClick={closedProductModal} />
                     </div>
                     <div className='modal-body'>
                         <div className='row'>
@@ -158,7 +158,7 @@ function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
                         </div>
                     </div>
                     <div className='modal-footer'>
-                        <button type='button' className='btn btn-secondary' onClick={clsodProductModal}>關閉</button>
+                        <button type='button' className='btn btn-secondary' onClick={closedProductModal}>關閉</button>
                         <button type='button' className='btn btn-primary' onClick={submit}>儲存</button>
                     </div>
                 </div>

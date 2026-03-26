@@ -5,7 +5,7 @@ import DeleteModal from "../../components/DeletModal";
 import { useLoading } from "../../page/LoadingContext";
 import { Modal } from "bootstrap";
 function AdminProducts() {
-    const { showLoading, hideLoading } = useLoading();//loading
+    const { showLoading, hideLoading, notify } = useLoading();//loading
     const [products, setProducts] = useState([]);//商品
     // const [pagination, setPagination] = useState({});//分頁
     const [type, setType] = useState('create');//type 決定modal用途-->edit
@@ -32,16 +32,29 @@ function AdminProducts() {
     const openProductModal = (type, product) => {
         setType(type); setTemProduct(product); productModal.current.show();
     };
-    const clsodProductModal = () => { productModal.current.hide(); };
+    const closedProductModal = () => { productModal.current.hide(); };
     // Delet method
     const openDeleteModal = (product) => {
         setTemProduct(product); deleteModal.current.show();
     };
-    const clsodDeleteModal = () => { deleteModal.current.hide(); };
+    const closedDeleteModal = () => { deleteModal.current.hide(); };
+
+    const deleteProduct = async (id) => {
+        try {
+            showLoading("刪除中...");
+            closedDeleteModal();
+            const res = await api.delete(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/product/${id}`);
+            if (res.data.success) {
+                getProduct(); notify("已刪除");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <div className="p-3">
-            <ProductModal clsodProductModal={clsodProductModal} getProduct={getProduct} type={type} temProduct={temProduct} />
-            <DeleteModal clsodDeleteModal={clsodDeleteModal} temProduct={temProduct} />
+            <ProductModal closedProductModal={closedProductModal} getProduct={getProduct} type={type} temProduct={temProduct} />
+            <DeleteModal closed={closedDeleteModal} Product={temProduct} Delete={deleteProduct} ProductID={temProduct.id} />
             <h3>產品列表</h3>
             <hr />
             <div className="text-end">
