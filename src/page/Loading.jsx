@@ -1,5 +1,5 @@
-// LoginLoading.jsx
-export default function LoginLoading({ show, message = "Loading..." }) {
+// LoadingModal.jsx
+export default function LoadingModal({ show, message = "Loading..." }) {
     if (!show) return null;
     return (
         <div className="modal-backdrop show d-flex justify-content-center align-items-center loading">

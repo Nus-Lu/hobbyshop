@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-function Login({ setLoading, setMessage }) {
+import { useLoading } from "../page/LoadingContext";
+function Login() {
+    const { showLoading, hideLoading } = useLoading();//loading
     const navigate = useNavigate()
     const [data, setData] = useState({ username: '', password: '', });//存登入寫的帳號密碼
     const [loginState, setLoginState] = useState({})//存登入狀態
@@ -11,7 +13,7 @@ function Login({ setLoading, setMessage }) {
     }
     const submit = async () => {
         try {
-            setMessage("登入中..."); setLoading(true);// 開loading
+            showLoading("登入中...");// 開loading
             const res = await axios.post(`/v2/admin/signin`, data);
             const { token, expired, success } = res.data;//解構取token
             document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
@@ -20,7 +22,7 @@ function Login({ setLoading, setMessage }) {
             const message = error.response?.data?.message || '登入失敗';
             setLoginState({ message });
         } finally {
-            setLoading(false);// 關loading
+            hideLoading();// 關loading
         }
     };
     return (

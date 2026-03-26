@@ -1,35 +1,25 @@
 import { useEffect, useState } from "react";
+import ConfirmButton from "../page/ConfirmButton";
 // import axios from "axios";
 import api from "../api/api";
 function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
     // Add Product
-    const [tempData, setTempData] = useState({
-        "title": "",
-        "category": "",
-        "origin_price": 100,
-        "price": 300,
-        "unit": "",
-        "description": "",
-        "content": "",
-        "is_enabled": 0,
-        "imageUrl": "",
-    });
+    const defaultData = { title: "", category: "", origin_price: 0, price: 0, unit: "", description: "", content: "", is_enabled: 0, imageUrl: "", imagesUrl: [], };
+    const [tempData, setTempData] = useState(defaultData);//初始化
     useEffect(() => {
-        if (type === 'create') {
-            setTempData({
-                "title": "",
-                "category": "",
-                "origin_price": 100,
-                "price": 300,
-                "unit": "",
-                "description": "",
-                "content": "",
-                "is_enabled": 1,
-                "imageUrl": "",
-            });
-        } else if (type === 'edit') {
-            setTempData(temProduct);
-        }
+        const timer = setTimeout(() => {
+            if (type === 'create') {
+                setTempData({
+                    ...defaultData,
+                });
+            } else if (type === 'edit') {
+                setTempData({
+                    ...defaultData,
+                    ...temProduct,
+                });
+            }
+        }, 0);
+        return () => clearTimeout(timer);
     }, [type, temProduct]);
     const handleChange = (e) => {
         const { value, name } = e.target;
@@ -78,6 +68,16 @@ function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
                     <div className='modal-body'>
                         <div className='row'>
                             <div className='col-sm-4'>
+                                {tempData.imageUrl && (
+                                    <div className="mb-2 position-relative">
+                                        <img src={tempData.imageUrl} alt="" className="img-fluid" />
+                                        <ConfirmButton
+                                            message="確定要刪除主圖嗎？"
+                                            className="btn btn-sm btn-danger position-absolute top-0 end-0"
+                                            onConfirm={() => setTempData({ ...tempData, imageUrl: "" })}>刪除
+                                        </ConfirmButton>
+                                    </div>
+                                )}
                                 <div className='form-group mb-2'>
                                     <label className='w-100' htmlFor='image'>輸入圖片網址
                                         <input type='text' name='imageUrl' id='image' placeholder='請輸入圖片連結' className='form-control' />
@@ -88,7 +88,22 @@ function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
                                         <input type='file' id='customFile' className='form-control' />
                                     </label>
                                 </div>
-                                <img src="" alt='' className='img-fluid' />
+                                {tempData.imagesUrl.map((img, idx) => img && (
+                                    <div key={idx} className="position-relative mb-2">
+                                        <img src={img} className="img-fluid" alt="" />
+                                        <ConfirmButton
+                                            message="確定要刪除這張圖片嗎？"
+                                            className="btn btn-sm btn-danger position-absolute top-0 end-0"
+                                            onConfirm={() => {
+                                                const newImages = [...tempData.imagesUrl];
+                                                newImages.splice(idx, 1);
+                                                setTempData({ ...tempData, imagesUrl: newImages });
+                                            }}
+                                        >
+                                            刪除
+                                        </ConfirmButton>
+                                    </div>
+                                ))}
                             </div>
                             <div className='col-sm-8'>
                                 <pre>{JSON.stringify(tempData)}</pre>
