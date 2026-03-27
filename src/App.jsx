@@ -10,6 +10,7 @@ import { LoadingProvider } from "./page/LoadingContext";
 import Login from "./page/Login"
 import Dashboard from "./page/admin/Dashboard"
 import AdminProducts from "./page/admin/AdminProducts"
+import AdminCoupons from "./page/admin/AdminCoupons";
 // import LoadingModal  from "./page/Loading"
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Dashboard />}>
           <Route path="products" element={<AdminProducts />} />
+          <Route path="coupons" element={<AdminCoupons />} />
         </Route>
       </Routes>
     </LoadingProvider>

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import ConfirmButton from "../page/ConfirmButton";
-// import axios from "axios";
 import api from "../api/api";
-function ProductModal({ closedProductModal, getProduct, type, temProduct }) {
+import { useLoading } from "../page/LoadingContext";
+function ProductModal({ closedProductModal, getProduct, type, tempProduct }) {
+    const { showLoading, hideLoading } = useLoading();//loading
     // Add Product
     const defaultData = { title: "", category: "", origin_price: 0, price: 0, unit: "", description: "", content: "", is_enabled: 0, imageUrl: "", imagesUrl: [], };
     const [tempData, setTempData] = useState(defaultData);//初始化
@@ -15,12 +16,12 @@ function ProductModal({ closedProductModal, getProduct, type, temProduct }) {
             } else if (type === 'edit') {
                 setTempData({
                     ...defaultData,
-                    ...temProduct,
+                    ...tempProduct,
                 });
             }
         }, 0);
         return () => clearTimeout(timer);
-    }, [type, temProduct]);
+    }, [type, tempProduct]);
     const handleChange = (e) => {
         const { value, name } = e.target;
         if (['origin_price', 'price'].includes(name)) {
@@ -42,14 +43,15 @@ function ProductModal({ closedProductModal, getProduct, type, temProduct }) {
     }
     const submit = async () => {
         try {
+            showLoading("更新中...");
             let apiAdress = `/v2/api/${import.meta.env.VITE_API_PATH}/admin/product`;
             let method = 'post';
             if (type === 'edit') {
-                apiAdress = `/v2/api/${import.meta.env.VITE_API_PATH}/admin/product/${temProduct.id}`;
+                apiAdress = `/v2/api/${import.meta.env.VITE_API_PATH}/admin/product/${tempProduct.id}`;
                 method = 'put';
             }
             const res = await api[method](apiAdress, { data: tempData });
-            console.log(res);
+            hideLoading();
             getProduct();
             closedProductModal();
         } catch (error) {
