@@ -2,22 +2,23 @@ import { useEffect, useRef, useState } from "react";
 import api from "../../api/api";
 import ProductModal from "../../components/ProductModal";
 import DeleteModal from "../../components/DeletModal";
+import Pagination from "../../components/Pagination";
 import { useLoading } from "../../page/LoadingContext";
 import { Modal } from "bootstrap";
 function AdminProducts() {
-    const { showLoading, hideLoading } = useLoading();//loading
+    const { showLoading, hideLoading, notify } = useLoading();//loading
     const [products, setProducts] = useState([]);//商品
-    // const [pagination, setPagination] = useState({});//分頁
+    const [pagination, setPagination] = useState({});//分頁
     const [type, setType] = useState('create');//type 決定modal用途-->edit
-    const [temProduct, setTemProduct] = useState({});//edit target data
+    const [tempProduct, setTempProduct] = useState({});//edit target data
     const productModal = useRef(null);//新增&編輯商品modal
     const deleteModal = useRef(null);//刪除商品modal
-    const getProduct = async () => {
+    const getProduct = async (page = 1) => {
         showLoading("商品載入中...");// 開loading
-        const productResponse = await api.get(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/products`);
+        const productResponse = await api.get(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/products?page=${page}`);
         console.log(productResponse);//登入取商品資料
         setProducts(productResponse.data.products);
-        // setPagination(productResponse.data.pagination);
+        setPagination(productResponse.data.pagination);
         hideLoading();// 關loading
     };
     useEffect(() => {
@@ -30,18 +31,31 @@ function AdminProducts() {
     }, []);
     // Product method
     const openProductModal = (type, product) => {
-        setType(type); setTemProduct(product); productModal.current.show();
+        setType(type); setTempProduct(product); productModal.current.show();
     };
-    const clsodProductModal = () => { productModal.current.hide(); };
+    const closedProductModal = () => { productModal.current.hide(); };
     // Delet method
     const openDeleteModal = (product) => {
-        setTemProduct(product); deleteModal.current.show();
+        setTempProduct(product); deleteModal.current.show();
     };
-    const clsodDeleteModal = () => { deleteModal.current.hide(); };
+    const closedDeleteModal = () => { deleteModal.current.hide(); };
+
+    const deleteProduct = async (id) => {
+        try {
+            showLoading("刪除中...");
+            closedDeleteModal();
+            const res = await api.delete(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/product/${id}`);
+            if (res.data.success) {
+                getProduct(); notify("已刪除");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <div className="p-3">
-            <ProductModal clsodProductModal={clsodProductModal} getProduct={getProduct} type={type} temProduct={temProduct} />
-            <DeleteModal clsodDeleteModal={clsodDeleteModal} temProduct={temProduct} />
+            <ProductModal closedProductModal={closedProductModal} getProduct={getProduct} type={type} tempProduct={tempProduct} />
+            <DeleteModal closed={closedDeleteModal} Product={tempProduct} Delete={deleteProduct} ProductID={tempProduct.id} />
             <h3>產品列表</h3>
             <hr />
             <div className="text-end">
@@ -74,24 +88,7 @@ function AdminProducts() {
                     })}
                 </tbody>
             </table>
-            <nav aria-label="Page navigation example">
-                <ul className="pagination">
-                    <li className="page-item">
-                        <a className="page-link disabled" href="/" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    {[...new Array(5)].map((_, i) => (
-                        <li className="page-item" key={`${i}_page`}>
-                            <a className={`page-link ${(i + 1 === 1) && 'active'}`} href="/">{i + 1}</a>
-                        </li>))}
-                    <li className="page-item">
-                        <a className="page-link" href="/" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+            <Pagination pagination={pagination} changPage={getProduct} />
         </div>
     );
 }

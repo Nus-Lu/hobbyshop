@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import ConfirmButton from "../page/ConfirmButton";
-// import axios from "axios";
 import api from "../api/api";
-function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
+import { useLoading } from "../page/LoadingContext";
+function ProductModal({ closedProductModal, getProduct, type, tempProduct }) {
+    const { showLoading, hideLoading } = useLoading();//loading
     // Add Product
     const defaultData = { title: "", category: "", origin_price: 0, price: 0, unit: "", description: "", content: "", is_enabled: 0, imageUrl: "", imagesUrl: [], };
     const [tempData, setTempData] = useState(defaultData);//初始化
@@ -15,12 +16,12 @@ function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
             } else if (type === 'edit') {
                 setTempData({
                     ...defaultData,
-                    ...temProduct,
+                    ...tempProduct,
                 });
             }
         }, 0);
         return () => clearTimeout(timer);
-    }, [type, temProduct]);
+    }, [type, tempProduct]);
     const handleChange = (e) => {
         const { value, name } = e.target;
         if (['origin_price', 'price'].includes(name)) {
@@ -42,16 +43,17 @@ function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
     }
     const submit = async () => {
         try {
+            showLoading("更新中...");
             let apiAdress = `/v2/api/${import.meta.env.VITE_API_PATH}/admin/product`;
             let method = 'post';
             if (type === 'edit') {
-                apiAdress = `/v2/api/${import.meta.env.VITE_API_PATH}/admin/product/${temProduct.id}`;
+                apiAdress = `/v2/api/${import.meta.env.VITE_API_PATH}/admin/product/${tempProduct.id}`;
                 method = 'put';
             }
             const res = await api[method](apiAdress, { data: tempData });
-            console.log(res);
+            hideLoading();
             getProduct();
-            clsodProductModal();
+            closedProductModal();
         } catch (error) {
             console.log(error);
         }
@@ -63,7 +65,7 @@ function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
                 <div className='modal-content'>
                     <div className='modal-header'>
                         <h1 className='modal-title fs-5' id='exampleModalLabel'>{type === 'edit' ? `編輯 ${tempData.title}` : '建立新商品'}</h1>
-                        <button type='button' className='btn-close' aria-label='Close' onClick={clsodProductModal} />
+                        <button type='button' className='btn-close' aria-label='Close' onClick={closedProductModal} />
                     </div>
                     <div className='modal-body'>
                         <div className='row'>
@@ -158,7 +160,7 @@ function ProductModal({ clsodProductModal, getProduct, type, temProduct }) {
                         </div>
                     </div>
                     <div className='modal-footer'>
-                        <button type='button' className='btn btn-secondary' onClick={clsodProductModal}>關閉</button>
+                        <button type='button' className='btn btn-secondary' onClick={closedProductModal}>關閉</button>
                         <button type='button' className='btn btn-primary' onClick={submit}>儲存</button>
                     </div>
                 </div>
