@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import ConfirmButton from "../page/ConfirmButton";
 import api from "../api/api";
 import { useLoading } from "../page/LoadingContext";
+import { MessageContext, handleSuccessMessage, handleFailMessage } from "../store/messageStore";
 function ProductModal({ closedProductModal, getProduct, type, tempProduct }) {
     const { showLoading, hideLoading } = useLoading();//loading
     // Add Product
     const defaultData = { title: "", category: "", origin_price: 0, price: 0, unit: "", description: "", content: "", is_enabled: 0, imageUrl: "", imagesUrl: [], };
     const [tempData, setTempData] = useState(defaultData);//初始化
+    // Edit Product
+    const [, dispatch] = useContext(MessageContext);
     useEffect(() => {
         const timer = setTimeout(() => {
             if (type === 'create') {
@@ -51,11 +54,13 @@ function ProductModal({ closedProductModal, getProduct, type, tempProduct }) {
                 method = 'put';
             }
             const res = await api[method](apiAdress, { data: tempData });
-            hideLoading();
+            handleSuccessMessage(dispatch, res);
             getProduct();
-            closedProductModal();
         } catch (error) {
-            console.log(error);
+            handleFailMessage(dispatch, error);
+        } finally {
+            hideLoading();
+            closedProductModal();
         }
     }
     // Add Product End
@@ -169,3 +174,5 @@ function ProductModal({ closedProductModal, getProduct, type, tempProduct }) {
     )
 }
 export default ProductModal;
+
+
