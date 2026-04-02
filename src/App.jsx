@@ -11,6 +11,10 @@ import Login from "./page/Login"
 import Dashboard from "./page/admin/Dashboard"
 import AdminProducts from "./page/admin/AdminProducts"
 import AdminCoupons from "./page/admin/AdminCoupons";
+import AdminOrders from "./page/admin/AdminOrders";
+import FrontLayout from "./page/front/FrontLayout";
+import Home from "./page/front/Home";
+import Products from "./page/front/Products";
 // import LoadingModal  from "./page/Loading"
 
 function App() {
@@ -18,15 +22,20 @@ function App() {
   // const [loadingMessage, setLoadingMessage] = useState("Loading..."); // Loading訊息
   return (
     <div className="App">
-    <LoadingProvider>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<Dashboard />}>
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="coupons" element={<AdminCoupons />} />
-        </Route>
-      </Routes>
-    </LoadingProvider>
+      <LoadingProvider>
+        <Routes>
+          <Route path="/" element={<FrontLayout />} >
+            <Route path="" element={<Home />} ></Route>
+            <Route path="products" element={<Products />} ></Route>
+          </Route>
+          <Route path="/login" element={<Login />} ></Route>
+          <Route path="/admin" element={<Dashboard />}>
+            <Route path="products" element={<AdminProducts />} ></Route>
+            <Route path="coupons" element={<AdminCoupons />} ></Route>
+            <Route path="orders" element={<AdminOrders />} ></Route>
+          </Route>
+        </Routes>
+      </LoadingProvider>
     </div>
   )
 }

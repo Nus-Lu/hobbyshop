@@ -1,10 +1,13 @@
-import { Outlet, useNavigate ,Link} from "react-router-dom";
+import { Outlet, useNavigate, Link } from "react-router-dom";
 //import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useReducer } from "react";
+import Message from "../../components/Message";
+import { MessageContext, messageReducer, initState } from "../../store/messageStore";
 import api from "../../api/api";
 function Dashboard() {
-    const token = document.cookie.split('; ').find((row) => row.startsWith('hexToken='))?.split('=')[1];
+    const reducer = useReducer(messageReducer, initState);
     const navigate = useNavigate()
+    const token = document.cookie.split('; ').find((row) => row.startsWith('hexToken='))?.split('=')[1];
     const logout = () => {
         document.cookie = `hexToken=;`;
         navigate('/login');
@@ -20,7 +23,8 @@ function Dashboard() {
         })();
     }, [navigate, token])
     return (
-        <>
+        <MessageContext.Provider value={reducer}>
+            <Message />
             <nav className="navbar navbar-expand-lg bg-dark">
                 <div className="container-fluid">
                     <p className="text-white mb-0">
@@ -61,11 +65,11 @@ function Dashboard() {
                 </div>
                 <div className="w-100">
                     {/* Products */}
-                    <Outlet />
+                    <Outlet></Outlet>
                     {/* Products end */}
                 </div>
             </div>
-        </>
+        </MessageContext.Provider>
     )
 }
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ConfirmButton from "../page/ConfirmButton";
 import api from "../api/api";
 import { useLoading } from "../page/LoadingContext";
-function CouponModal({ closedModal, getCoupons, type, tempCoupon, timestampToDateString }) {
+function OrderModal({ closedModal, getOrders, type, tempOrder, timestampToDateString }) {
     const { showLoading, hideLoading } = useLoading();//loading
     // YYYY-MM-DD → Unix timestamp
     const dateStringToTimestamp = (dateString) => {
@@ -36,16 +36,16 @@ function CouponModal({ closedModal, getCoupons, type, tempCoupon, timestampToDat
                 });
                 setDate(todayStr);
             } else if (type === 'edit') {
-                const dueDateStr = timestampToDateString(tempCoupon.due_date);
+                const dueDateStr = timestampToDateString(tempOrder.due_date);
                 setTempData({
-                    ...tempCoupon,
-                    due_date: tempCoupon.due_date,
+                    ...tempOrder,
+                    due_date: tempOrder.due_date,
                 });
                 setDate(dueDateStr);
             }
         }, 0);
         return () => clearTimeout(timer);
-    }, [type, tempCoupon]);
+    }, [type, tempOrder]);
 
     const handleChange = (e) => {
         const { value, name } = e.target;
@@ -69,15 +69,15 @@ function CouponModal({ closedModal, getCoupons, type, tempCoupon, timestampToDat
     const submit = async () => {
         try {
             showLoading("更新中...");
-            let apiAdress = `/v2/api/${import.meta.env.VITE_API_PATH}/admin/coupon`;
+            let apiAdress = `/v2/api/${import.meta.env.VITE_API_PATH}/admin/order`;
             let method = 'post';
             if (type === 'edit') {
-                apiAdress = `/v2/api/${import.meta.env.VITE_API_PATH}/admin/coupon/${tempCoupon.id}`;
+                apiAdress = `/v2/api/${import.meta.env.VITE_API_PATH}/admin/order/${tempOrder.id}`;
                 method = 'put';
             }
             const res = await api[method](apiAdress, { data: tempData });
             console.log(res);
-            getCoupons();
+            getOrders();
         } catch (error) {
             console.log(error);
         }
@@ -88,7 +88,7 @@ function CouponModal({ closedModal, getCoupons, type, tempCoupon, timestampToDat
     }
     // Add Product End
     return (
-        <div className="modal fade" id="CouponModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal fade" id="OrderModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className='modal-dialog modal-lg'>
                 <div className='modal-content'>
                     <div className='modal-header'>
@@ -138,4 +138,4 @@ function CouponModal({ closedModal, getCoupons, type, tempCoupon, timestampToDat
         </div>
     )
 }
-export default CouponModal;
+export default OrderModal;
