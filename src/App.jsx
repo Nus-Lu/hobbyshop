@@ -14,7 +14,7 @@ import AdminCoupons from "./page/admin/AdminCoupons";
 import AdminOrders from "./page/admin/AdminOrders";
 import FrontLayout from "./page/front/FrontLayout";
 import Home from "./page/front/Home";
-import Products from "./page/front/products";
+import Products from "./page/front/Products";
 // import LoadingModal  from "./page/Loading"
 
 function App() {

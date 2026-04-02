@@ -1,4 +1,5 @@
 function Home() {
+        console.log("Home");
     return (
         <>
             <div className="container">
