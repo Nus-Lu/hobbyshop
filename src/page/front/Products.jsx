@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/api";
 import Pagination from "../../components/Pagination";
-import { useLoading } from "../../page/LoadingContext";
+import { useLoading } from "../LoadingContext";
 function Products() {
     const [products, setProducts] = useState([]);//商品
     const [pagination, setPagination] = useState({});//分頁
@@ -9,7 +9,7 @@ function Products() {
     const getProduct = async (page = 1) => {
         showLoading("商品載入中...");// 開loading
         const productResponse = await api.get(`/v2/api/${import.meta.env.VITE_API_PATH}/products?page=${page}`);
-        console.log(productResponse.data);
+        //console.log(productResponse.data);
         setProducts(productResponse.data.products);
         setPagination(productResponse.data.pagination);
         hideLoading();// 關loading

@@ -63,6 +63,47 @@ function ProductModal({ closedProductModal, getProduct, type, tempProduct }) {
             closedProductModal();
         }
     }
+    ///圖片上傳
+    const uploadFile = async (file, isMain = false) => {
+        if (!file) return;
+        const formData = new FormData();
+        formData.append("file-to-upload", file);
+        try {
+            showLoading("上傳中...");
+            const res = await api.post(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/upload`, formData);
+            const { imageUrl } = res.data;
+            if (isMain) {
+                // 主圖
+                setTempData(prev => ({
+                    ...prev,
+                    imageUrl
+                }));
+            } else {
+                // 副圖（重點）
+                setTempData(prev => ({
+                    ...prev,
+                    imagesUrl: [...(prev.imagesUrl || []), imageUrl]
+                }));
+            }
+
+        } catch (error) {
+            handleFailMessage(dispatch, error);
+        } finally {
+            hideLoading();
+        }
+    };
+    const MAX_IMAGES = 5;//上限
+    const handleMultipleUpload = (e) => {
+        const files = Array.from(e.target.files);
+
+        if ((tempData.imagesUrl?.length || 0) + files.length > MAX_IMAGES) {
+            alert(`最多只能上傳 ${MAX_IMAGES} 張圖片`);
+            return;
+        }
+
+        files.forEach(file => uploadFile(file));
+    };
+    //fu
     // Add Product End
     return (
         <div className="modal fade" id="ProductModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -86,13 +127,13 @@ function ProductModal({ closedProductModal, getProduct, type, tempProduct }) {
                                     </div>
                                 )}
                                 <div className='form-group mb-2'>
-                                    <label className='w-100' htmlFor='image'>輸入圖片網址
-                                        <input type='text' name='imageUrl' id='image' placeholder='請輸入圖片連結' className='form-control' />
+                                    <label className='w-100' htmlFor='image'>主要圖片///改了這邊
+                                        <input type='file' className='form-control' onChange={(e) => uploadFile(e.target.files[0], true)} />
                                     </label>
                                 </div>
                                 <div className='form-group mb-2'>
-                                    <label className='w-100' htmlFor='customFile'>或 上傳圖片
-                                        <input type='file' id='customFile' className='form-control' />
+                                    <label className='w-100' htmlFor='customFile'>附圖///改了這邊
+                                        <input type='file' id='customFile' className='form-control' multiple onChange={handleMultipleUpload} />
                                     </label>
                                 </div>
                                 {tempData.imagesUrl.map((img, idx) => img && (
@@ -105,8 +146,7 @@ function ProductModal({ closedProductModal, getProduct, type, tempProduct }) {
                                                 const newImages = [...tempData.imagesUrl];
                                                 newImages.splice(idx, 1);
                                                 setTempData({ ...tempData, imagesUrl: newImages });
-                                            }}
-                                        >
+                                            }}>
                                             刪除
                                         </ConfirmButton>
                                     </div>
