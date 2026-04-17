@@ -16,7 +16,7 @@ function AdminProducts() {
     const getProduct = async (page = 1) => {
         showLoading("商品載入中...");// 開loading
         const productResponse = await api.get(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/products?page=${page}`);
-        console.log(productResponse);//登入取商品資料
+        //console.log(productResponse);//登入取商品資料
         setProducts(productResponse.data.products);
         setPagination(productResponse.data.pagination);
         hideLoading();// 關loading
