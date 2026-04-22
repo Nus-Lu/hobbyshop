@@ -16,6 +16,8 @@ import FrontLayout from "./page/front/FrontLayout";
 import Home from "./page/front/Home";
 import Products from "./page/front/Products";
 import ProductDetail from "./page/front/ProductDetail";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 // import LoadingModal  from "./page/Loading"
 
 function App() {

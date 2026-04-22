@@ -4,8 +4,7 @@ function Navbar() {
         <div className="bg-white sticky-top NV">
             <div className="container">
                 <nav className="navbar px-0 navbar-expand-lg navbar-light bg-white">
-                    <NavLink className="navbar-brand position-absolute" to="/"
-                        style={{ left: '50%', transform: 'translate(-50%, -50%)', top: '50%' }}>
+                    <NavLink className="navbar-brand position-absolute" to="/" style={{ left: '50%', transform: 'translate(-50%, -50%)', top: '50%' }}>
                         Test HobbyShop
                     </NavLink>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

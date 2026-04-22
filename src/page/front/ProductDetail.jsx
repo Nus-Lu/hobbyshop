@@ -2,10 +2,19 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../../api/api";
 import { useLoading } from "../LoadingContext";
+import SliderImport from "react-slick";
+const Slider = SliderImport.default || SliderImport;
 function ProductDetail() {
     const [product, setProduct] = useState({});//商品
     const { showLoading, hideLoading } = useLoading();//loading
     const { id } = useParams();//取ID
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1
+    };
     const getProduct = async (id) => {
         showLoading("商品詳細載入中...");// 開loading
         try {
@@ -25,17 +34,21 @@ function ProductDetail() {
     }, [id]);
     return (
         <div className="container">
-            <div style={{ minHeight: '400px', backgroundImage: `url(${product.imageUrl})`, backgroundPosition: 'center center',backgroundSize: 'cover',backgroundRepeat: 'no-repeat'}}></div>
+            <div style={{ minHeight: '400px', backgroundImage: `url(${product.imageUrl})`, backgroundPosition: 'center center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}></div>
             <div className="row justify-content-between mt-4 mb-7">
                 <div className="col-md-7">
                     <h2 className="mb-0">{product.title}</h2>
                     <p className="fw-bold">NT${product.price?.toLocaleString()}</p>
                     <p>{product.description}</p>
-                    <div className="my-4">
-                        {product.imagesUrl?.map((url, index) => (
-                            <img key={index} src={url} alt="" className="img-fluid mt-4" />
-                        ))}
-                    </div>
+                    {product.imagesUrl?.length > 0 && (
+                        <Slider {...settings}>
+                            {product.imagesUrl.map((url, index) => (
+                                <div className="my-4" key={index}>
+                                    <img src={url} alt="" className="img-fluid mt-4" />
+                                </div>
+                            ))}
+                        </Slider>
+                    )}
                     <div className="accordion border border-bottom border-top-0 border-start-0 border-end-0 mb-3" id="accordionExample">
                         <div className="card border-0">
                             <div className="card-header py-4 bg-white border border-bottom-0 border-top border-start-0 border-end-0" id="headingOne" data-bs-toggle="collapse" data-bs-target="#collapseOne">
