@@ -40,15 +40,17 @@ function ProductDetail() {
                     <h2 className="mb-0">{product.title}</h2>
                     <p className="fw-bold">NT${product.price?.toLocaleString()}</p>
                     <p>{product.description}</p>
-                    {product.imagesUrl?.length > 0 && (
-                        <Slider {...settings}>
-                            {product.imagesUrl.map((url, index) => (
-                                <div className="my-4" key={index}>
-                                    <img src={url} alt="" className="img-fluid mt-4" />
-                                </div>
-                            ))}
-                        </Slider>
-                    )}
+                    <div className="Slider">
+                        {product.imagesUrl?.length > 0 && (
+                            <Slider {...settings}>
+                                {product.imagesUrl.map((url, index) => (
+                                    <div className="my-4 wrap" key={index}>
+                                        <img src={url} alt="" className="img-fluid mt-4" />
+                                    </div>
+                                ))}
+                            </Slider>
+                        )}
+                    </div>
                     <div className="accordion border border-bottom border-top-0 border-start-0 border-end-0 mb-3" id="accordionExample">
                         <div className="card border-0">
                             <div className="card-header py-4 bg-white border border-bottom-0 border-top border-start-0 border-end-0" id="headingOne" data-bs-toggle="collapse" data-bs-target="#collapseOne">
