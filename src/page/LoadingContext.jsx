@@ -4,13 +4,22 @@ import LoadingModal from "./Loading";
 const LoadingContext = createContext();
 export const LoadingProvider = ({ children }) => {
     const [loading, setLoading] = useState({ show: false, message: "Loading..." });
-    const showLoading = (message = "Loading...") => setLoading({ show: true, message });
-    const hideLoading = () => setLoading({ show: false, message: "Loading..." });
-    const notify = (message, duration = 1500) => {
+    const showLoading = (message = "Loading...") =>
+        setLoading({ show: true, message, type: "loading" });
+    const hideLoading = () =>
+        setLoading(prev =>
+            prev.type === "loading"
+                ? { show: false, message: "Loading...", type: "loading" }
+                : prev
+        );
+    const notify = (message, duration = 500) => {
         setLoading({ show: true, message, type: "notify" });
         setTimeout(() => {
-            // 只關閉 notify，不影響手動 loading
-            setLoading(prev => prev.type === "notify" ? { show: false, message: "Loading...", type: "loading" } : prev);
+            setLoading(prev =>
+                prev.type === "notify"
+                    ? { show: false, message: "Loading...", type: "loading" }
+                    : prev
+            );
         }, duration);
     };
     return (

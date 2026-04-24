@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-function Navbar() {
+function Navbar({ cartData }) {
     return (
         <div className="bg-white sticky-top NV">
             <div className="container">
@@ -19,8 +19,11 @@ function Navbar() {
                     </div>
                     <div className="d-flex">
                         {/* <a href="#"><i className="fas fa-heart me-5"></i></a> */}
-                        <NavLink className="nav-link" to="/cart">
+                        <NavLink className="nav-link position-relative" to="/cart">
                             <i className="bi bi-cart"></i>
+                            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {cartData?.carts?.length}
+                            </span>
                         </NavLink>
                     </div>
                 </nav>
