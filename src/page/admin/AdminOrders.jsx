@@ -6,7 +6,7 @@ import Pagination from "../../components/Pagination";
 import { useLoading } from "../../page/LoadingContext";
 import { Modal } from "bootstrap";
 function AdminOrders() {
-    const { showLoading, hideLoading, notify } = useLoading();//loading
+    const { showLoading, hideLoading } = useLoading();//loading
     const [orders, setOrders] = useState([]);//訂單
     const [pagination, setPagination] = useState({});//分頁
     const [type, setType] = useState('create');//type 決定modal用途-->edit

@@ -1,7 +1,44 @@
 import { useOutletContext } from "react-router-dom";
+import { useLoading } from "../LoadingContext";
+import { useState } from "react";
+import api from "../../api/api";
 function Cart() {
-    const { cartData } = useOutletContext();
-    console.log(cartData);//這裡是5 但map不出商品
+    const { showLoading, notify } = useLoading();//loading
+    const { cartData, getCart } = useOutletContext();
+    const [loadingItems, setLoadingItems] = useState([]); // State to track loading items
+    const removeCartItem = async (id) => {
+
+        showLoading("移除中...");
+        try {
+            const res = await api.delete(`/v2/api/${import.meta.env.VITE_API_PATH}/cart/${id}`);
+            console.log(res);
+            getCart(); // Call getCart to update the cart data after removal
+        } catch (error) {
+            console.error("Error removing cart item:", error);
+        } finally {
+            notify("已移除商品");
+        }
+    }
+    const updateCartItem = async (item, qty) => {
+        const data = {
+            "data": {
+                "product_id": item.product_id,
+                "qty": qty
+            }
+        }
+        showLoading("更新中...");
+        setLoadingItems([...loadingItems, item.id]); // Add item to loading state
+        try {
+            const res = await api.put(`/v2/api/${import.meta.env.VITE_API_PATH}/cart/${item.id}`, data);
+            console.log(res);
+            getCart();
+        } catch (error) {
+            console.error("Error updating cart item:", error);
+        } finally {
+            setLoadingItems(loadingItems.filter((loadObject) => loadObject !== item.id)); // Remove item from loading state
+            notify("已更新商品數量");
+        }
+    }
     return (
         <div className="container">
             <div className="row justify-content-center">
@@ -22,6 +59,9 @@ function Cart() {
                                 />
 
                                 <div className="w-100 p-3 position-relative">
+                                    <button onClick={() => removeCartItem(item.id)} className="position-absolute top-0 end-0 btn btn-link text-danger">
+                                        <i className="bi bi-trash"></i>
+                                    </button>
                                     <p className="mb-0 fw-bold">{item.product.title}</p>
                                     <p className="mb-1 text-muted" style={{ fontSize: "14px" }}>
                                         {item.product.description}
@@ -31,17 +71,21 @@ function Cart() {
                                         <p className="mb-0 ms-auto">NT${item.total}</p>
                                     </div>
                                 </div>
+                                <div className='d-flex justify-content-between align-items-center w-100'>
+                                    <div className='input-group w-50 align-items-center'>
+                                        <select name='' className='form-select' id='' value={item.qty} disabled={loadingItems.includes(item.id)} onChange={(e) => { updateCartItem(item, e.target.value * 1); }} >
+                                            {[...new Array(20)].map((i, num) => {
+                                                return (
+                                                    <option value={num + 1} key={num}>{num + 1}</option>
+                                                );
+                                            })}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         );
                     }))}
-                    <table className="table mt-4 text-muted">
-                        <tbody>
-                            <tr>
-                                <th scope="row" className="border-0 px-0 font-weight-normal">折扣</th>
-                                <td className="text-end border-0 px-0">NT$24,000</td>
-                            </tr>
-                        </tbody>
-                    </table>
+
                     <div className="d-flex justify-content-between mt-4">
                         <p className="mb-0 h4 fw-bold">總金額</p>
                         <p className="mb-0 h4 fw-bold">NT${cartData.final_total}</p>
