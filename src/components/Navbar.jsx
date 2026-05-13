@@ -13,7 +13,7 @@ function Navbar({ cartData }) {
                     <div className="collapse navbar-collapse bg-white custom-header-md-open" id="navbarNav">
                         <ul className="navbar-nav">
                             <li className="nav-item active">
-                                <NavLink className="nav-link ps-0" to="/products">產品列表</NavLink>
+                                <NavLink className="nav-link ps-0" to="/products">商品列表</NavLink>
                             </li>
                         </ul>
                     </div>
