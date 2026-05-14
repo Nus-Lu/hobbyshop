@@ -1,8 +1,10 @@
-import { useOutletContext, Link } from "react-router-dom";
+import { useOutletContext, Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form"
 import { Input } from "../../components/FormElements";
+import api from "../../api/api";
 function Checkout() {
-    const { cartData, getCart } = useOutletContext();
+    const { cartData } = useOutletContext();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -10,9 +12,21 @@ function Checkout() {
     } = useForm({
         mode: 'onTouched',
     });
-    const onSubmit = (data) => {
-        console.log(errors);
-        console.log(data);
+    const onSubmit = async (data) => {
+        const { name, email, tel, address } = data;//解構
+        const form = {
+            "data": {
+                "user": { name, email, tel, address },
+            }
+        }
+        try {
+            const res = await api.post(`/v2/api/${import.meta.env.VITE_API_PATH}/order`, form);
+            console.log(res);
+            navigate(`/success/${res.data.orderId}`);
+        } catch (error) {
+            console.error("Error submitting order:", error);
+        }
+
     };
     return (
         <div className='bg-light pt-5 pb-7'>

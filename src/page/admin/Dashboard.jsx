@@ -1,6 +1,7 @@
 import { Outlet, useNavigate, Link } from "react-router-dom";
 //import axios from "axios";
 import { useEffect, useReducer } from "react";
+import { Offcanvas } from "bootstrap";
 import Message from "../../components/Message";
 import { MessageContext, messageReducer, initState } from "../../store/messageStore";
 import api from "../../api/api";
@@ -22,6 +23,14 @@ function Dashboard() {
             }
         })();
     }, [navigate, token])
+    const closeOffcanvas = () => {
+        const offcanvasElement = document.getElementById('adminSidebar');
+        const offcanvasInstance = Offcanvas.getInstance(offcanvasElement);
+
+        if (offcanvasInstance) {
+            offcanvasInstance.hide();
+        }
+    };
     return (
         <MessageContext.Provider value={reducer}>
             <Message />
@@ -61,29 +70,15 @@ function Dashboard() {
                 <div className="offcanvas offcanvas-start" tabIndex="-1" id="adminSidebar" >
                     <div className="offcanvas-body p-0">
                         <ul className="list-group list-group-flush">
-                            <Link
-                                className="list-group-item list-group-item-action py-3"
-                                to="/admin/products"
-                                data-bs-dismiss="offcanvas"
-                            >
+                            <Link className="list-group-item list-group-item-action py-3" to="/admin/products" onClick={closeOffcanvas}>
                                 <i className="bi bi-cup-fill me-2" />
                                 產品列表
                             </Link>
-
-                            <Link
-                                className="list-group-item list-group-item-action py-3"
-                                to="/admin/coupons"
-                                data-bs-dismiss="offcanvas"
-                            >
+                            <Link className="list-group-item list-group-item-action py-3" to="/admin/coupons" onClick={closeOffcanvas}>
                                 <i className="bi bi-ticket-perforated-fill me-2" />
                                 優惠卷列表
                             </Link>
-
-                            <Link
-                                className="list-group-item list-group-item-action py-3"
-                                to="/admin/orders"
-                                data-bs-dismiss="offcanvas"
-                            >
+                            <Link className="list-group-item list-group-item-action py-3" to="/admin/orders" onClick={closeOffcanvas} >
                                 <i className="bi bi-receipt me-2" />
                                 訂單列表
                             </Link>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../../api/api";
-import OrderModal from "../../components/OrderModal";
+import PurchaseModal from "../../components/PurchaseModal";
 // import DeleteModal from "../../components/DeletModal";
 import Pagination from "../../components/Pagination";
 import { useLoading } from "../../page/LoadingContext";
@@ -9,20 +9,20 @@ function AdminOrders() {
     const { showLoading, hideLoading } = useLoading();//loading
     const [orders, setOrders] = useState([]);//訂單
     const [pagination, setPagination] = useState({});//分頁
-    const [type, setType] = useState('create');//type 決定modal用途-->edit
+    // const [type, setType] = useState('create');//type 決定modal用途-->edit
     const [tempOrder, setTempOrder] = useState({});//edit target data
-    const orderModal = useRef(null);//新增&編輯訂單modal
-    const deleteModal = useRef(null);//刪除訂單modal
+    const Purchase = useRef(null);//新增&編輯訂單modal
+    
+    // const deleteModal = useRef(null);//刪除訂單modal
     const getOrder = async (page = 1) => {
         showLoading("訂單載入中...");// 開loading
         const orderResponse = await api.get(`/v2/api/${import.meta.env.VITE_API_PATH}/admin/orders?page=${page}`);
-        console.log(orderResponse);//登入取訂單資料
         setOrders(orderResponse.data.orders);
         setPagination(orderResponse.data.pagination);
         hideLoading();// 關loading
     };
     useEffect(() => {
-        orderModal.current = new Modal('#OrderModal', { backdrop: 'static', });//初始化 Modal
+            Purchase.current = new Modal('#PurchaseModal', { backdrop: 'static', });//初始化 Modal
         // deleteModal.current = new Modal('#DeleteModal', { backdrop: 'static', });//初始化 Modal
         const timer = setTimeout(() => {
             getOrder();//打api
@@ -30,14 +30,17 @@ function AdminOrders() {
         return () => clearTimeout(timer);
     }, []);
     // Order method
-    const openOrderModal = (type, order) => {
-        setType(type); setTempOrder(order); orderModal.current.show();
+    const openPurchaseModal = (order) => {
+        setTempOrder(order);
+        Purchase.current.show();
     };
-    const closedOrderModal = () => { orderModal.current.hide(); };
+    const closedPurchaseModal = () => { 
+        document.activeElement.blur();
+        Purchase.current.hide(); };
     // Delet method
-    const openDeleteModal = (order) => {
-        setTempOrder(order); deleteModal.current.show();
-    };
+    // const openDeleteModal = (order) => {
+    //     setTempOrder(order); deleteModal.current.show();
+    // };
     // const closedDeleteModal = () => { deleteModal.current.hide(); };
 
     // const deleteOrder = async (id) => {
@@ -77,31 +80,30 @@ function AdminOrders() {
             {/* <button className="btn btn-primary" onClick={() => openOrderModal('create', {})}>新增訂單</button> */}
             {/* <button className="btn btn-primary" onClick={postOrder}>新增訂單</button> */}
 
-            <OrderModal closedOrderModal={closedOrderModal} getOrder={getOrder} type={type} tempOrder={tempOrder} />
+            <PurchaseModal closedModal={closedPurchaseModal} tempOrder={tempOrder} />
             {/* <DeleteModal closed={closedDeleteModal} Order={tempOrder} Delete={deleteOrder} OrderID={tempOrder.id} /> */}
             <h3>訂單列表</h3>
             <hr />
             <table className="table">
                 <thead>
                     <tr>
-                        <th scope="col">分類</th>
-                        <th scope="col">名稱</th>
-                        <th scope="col">售價</th>
-                        <th scope="col">啟用狀態</th>
-                        <th scope="col">編輯</th>
+                        <th scope="col">買家姓名</th>
+                        <th scope="col">信箱</th>
+                        <th scope="col">總價</th>
+                        <th scope="col">地址</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {orders.map((order) => {
                         return (
                             <tr key={order.id}>
-                                <td>{order.category}</td>
-                                <td>{order.title}</td>
-                                <td>{order.price}</td>
-                                <td>{order.is_enabled ? '啟用' : '未啟用'}</td>
+                                <td>{order.user.name}</td>
+                                <td>{order.user.email}</td>
+                                <td>NT.{order.total}</td>
+                                <td>{order.user.address}</td>
                                 <td>
-                                    <button type="button" className="btn btn-primary btn-sm" onClick={() => openOrderModal('edit', order)}>編輯</button>
-                                    <button type="button" className="btn btn-outline-danger btn-sm ms-2" onClick={() => openDeleteModal(order)}>刪除</button>
+                                    <button type="button" className="btn btn-primary btn-sm" onClick={() => openPurchaseModal(order)}>檢視</button>
                                 </td>
                             </tr>
                         );

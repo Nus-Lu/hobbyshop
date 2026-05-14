@@ -18,6 +18,7 @@ import Products from "./page/front/Products";
 import ProductDetail from "./page/front/ProductDetail";
 import Cart from "./page/front/Cart";
 import Checkout from "./page/front/Checkout";
+import Success from "./page/front/Success";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./stylesheets/custom.scss";
@@ -36,6 +37,7 @@ function App() {
             <Route path="product/:id" element={<ProductDetail />} ></Route>
             <Route path="cart" element={<Cart />} ></Route>
             <Route path="checkout" element={<Checkout />} ></Route>
+            <Route path="success/:orderId" element={<Success />} ></Route>
           </Route>
           <Route path="/login" element={<Login />} ></Route>
           <Route path="/admin" element={<Dashboard />}>

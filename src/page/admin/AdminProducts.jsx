@@ -33,12 +33,12 @@ function AdminProducts() {
     const openProductModal = (type, product) => {
         setType(type); setTempProduct(product); productModal.current.show();
     };
-    const closedProductModal = () => { productModal.current.hide(); };
+    const closedProductModal = () => { document.activeElement.blur();productModal.current.hide(); };
     // Delet method
     const openDeleteModal = (product) => {
         setTempProduct(product); deleteModal.current.show();
     };
-    const closedDeleteModal = () => { deleteModal.current.hide(); };
+    const closedDeleteModal = () => { document.activeElement.blur();deleteModal.current.hide(); };
 
     const deleteProduct = async (id) => {
         try {
