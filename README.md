@@ -4,6 +4,9 @@
 
 前後台分離的電商系統，使用 React + Vite 建立 SPA 架構，串接 Hexschool API，實作商品瀏覽、購物車、結帳與後台管理功能（商品、訂單、優惠券 CRUD），並部署至 GitHub Pages。
 
+## Demo
+👉 https://nus-lu.github.io/hobbyshop/
+
 ## 專案內容
 
 前台包含商品列表、商品詳細頁、購物車與結帳流程  
