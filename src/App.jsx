@@ -15,6 +15,13 @@ import AdminOrders from "./page/admin/AdminOrders";
 import FrontLayout from "./page/front/FrontLayout";
 import Home from "./page/front/Home";
 import Products from "./page/front/Products";
+import ProductDetail from "./page/front/ProductDetail";
+import Cart from "./page/front/Cart";
+import Checkout from "./page/front/Checkout";
+import Success from "./page/front/Success";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "./stylesheets/custom.scss";
 // import LoadingModal  from "./page/Loading"
 
 function App() {
@@ -27,6 +34,10 @@ function App() {
           <Route path="/" element={<FrontLayout />} >
             <Route path="" element={<Home />} ></Route>
             <Route path="products" element={<Products />} ></Route>
+            <Route path="product/:id" element={<ProductDetail />} ></Route>
+            <Route path="cart" element={<Cart />} ></Route>
+            <Route path="checkout" element={<Checkout />} ></Route>
+            <Route path="success/:orderId" element={<Success />} ></Route>
           </Route>
           <Route path="/login" element={<Login />} ></Route>
           <Route path="/admin" element={<Dashboard />}>

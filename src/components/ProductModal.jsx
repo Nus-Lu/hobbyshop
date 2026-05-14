@@ -95,12 +95,10 @@ function ProductModal({ closedProductModal, getProduct, type, tempProduct }) {
     const MAX_IMAGES = 5;//上限
     const handleMultipleUpload = (e) => {
         const files = Array.from(e.target.files);
-
         if ((tempData.imagesUrl?.length || 0) + files.length > MAX_IMAGES) {
             alert(`最多只能上傳 ${MAX_IMAGES} 張圖片`);
             return;
         }
-
         files.forEach(file => uploadFile(file));
     };
     //fu

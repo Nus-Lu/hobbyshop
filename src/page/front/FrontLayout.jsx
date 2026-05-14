@@ -1,10 +1,27 @@
 import { Outlet } from "react-router-dom";
+import api from "../../api/api";
 import Navbar from "../../components/Navbar";
+import { useEffect, useState } from "react";
 function FrontLayout() {
+    const [cartData, setCartData] = useState({});
+    const getCart = async () => {
+        try {
+            const res = await api.get(`/v2/api/${import.meta.env.VITE_API_PATH}/cart`);
+            setCartData(res.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            getCart();
+        }, 0);
+        return () => clearTimeout(timer);
+    }, []);
     return (
         <>
-            <Navbar />
-            <Outlet></Outlet>
+            <Navbar cartData={cartData} />
+            <Outlet context={{ getCart, cartData }}></Outlet>
             <div className="bg-dark FT">
                 <div className="container">
                     <div className="d-flex align-items-center justify-content-between text-white py-4">

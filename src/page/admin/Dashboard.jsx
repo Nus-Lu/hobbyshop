@@ -1,6 +1,7 @@
 import { Outlet, useNavigate, Link } from "react-router-dom";
 //import axios from "axios";
 import { useEffect, useReducer } from "react";
+import { Offcanvas } from "bootstrap";
 import Message from "../../components/Message";
 import { MessageContext, messageReducer, initState } from "../../store/messageStore";
 import api from "../../api/api";
@@ -22,6 +23,14 @@ function Dashboard() {
             }
         })();
     }, [navigate, token])
+    const closeOffcanvas = () => {
+        const offcanvasElement = document.getElementById('adminSidebar');
+        const offcanvasInstance = Offcanvas.getInstance(offcanvasElement);
+
+        if (offcanvasInstance) {
+            offcanvasInstance.hide();
+        }
+    };
     return (
         <MessageContext.Provider value={reducer}>
             <Message />
@@ -30,44 +39,60 @@ function Dashboard() {
                     <p className="text-white mb-0">
                         後台管理系統
                     </p>
-                    <button type="button" className="navbar-toggler"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav"
-                        aria-controls="navbarNav"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon" />
+                    <button className="navbar-toggler d-md-none bg-white border-0 shadow-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminSidebar" >
+                        <span className="navbar-toggler-icon"></span>
                     </button>
-                    <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-                        <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <button type="button" className="btn btn-sm btn-light" onClick={logout}>
-                                    登出
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </nav>
             <div className="d-flex" style={{ minHeight: 'calc(100vh - 56px)' }}>
-                <div className="bg-light" style={{ width: '200px' }}>
+                {/* desktop sidebar */}
+                <div className="bg-light border-end d-none d-md-block" style={{ width: '220px' }} >
                     <ul className="list-group list-group-flush">
                         <Link className="list-group-item list-group-item-action py-3" to="/admin/products">
-                            <i className="bi bi-cup-fill me-2" />產品列表
+                            <i className="bi bi-cup-fill me-2" />
+                            產品列表
                         </Link>
                         <Link className="list-group-item list-group-item-action py-3" to="/admin/coupons">
-                            <i className="bi bi-ticket-perforated-fill me-2" />優惠卷列表
+                            <i className="bi bi-ticket-perforated-fill me-2" />
+                            優惠卷列表
                         </Link>
+
                         <Link className="list-group-item list-group-item-action py-3" to="/admin/orders">
-                            <i className="bi bi-receipt me-2" />訂單列表
+                            <i className="bi bi-receipt me-2" />
+                            訂單列表
                         </Link>
+                        <button type="button" className="list-group-item list-group-item-action py-3" onClick={logout}>
+                            登出
+                        </button>
                     </ul>
                 </div>
-                <div className="w-100">
-                    {/* Products */}
-                    <Outlet></Outlet>
-                    {/* Products end */}
+                {/* mobile offcanvas */}
+                <div className="offcanvas offcanvas-start" tabIndex="-1" id="adminSidebar" >
+                    <div className="offcanvas-body p-0">
+                        <ul className="list-group list-group-flush">
+                            <Link className="list-group-item list-group-item-action py-3" to="/admin/products" onClick={closeOffcanvas}>
+                                <i className="bi bi-cup-fill me-2" />
+                                產品列表
+                            </Link>
+                            <Link className="list-group-item list-group-item-action py-3" to="/admin/coupons" onClick={closeOffcanvas}>
+                                <i className="bi bi-ticket-perforated-fill me-2" />
+                                優惠卷列表
+                            </Link>
+                            <Link className="list-group-item list-group-item-action py-3" to="/admin/orders" onClick={closeOffcanvas} >
+                                <i className="bi bi-receipt me-2" />
+                                訂單列表
+                            </Link>
+                            <button type="button" className="list-group-item list-group-item-action py-3" onClick={logout}>
+                                登出
+                            </button>
+                        </ul>
+                    </div>
                 </div>
+                {/* content */}
+                <div className="flex-grow-1 overflow-auto">
+                    <Outlet />
+                </div>
+
             </div>
         </MessageContext.Provider>
     )

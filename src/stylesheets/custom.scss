@@ -1,0 +1,19 @@
+// slick-carousel
+.slick-prev,
+.slick-next {
+    z-index: 9;
+    width: 35px;
+    height: 35px;
+}
+
+.slick-next {
+    right: 0;
+}
+
+.slick-prev {
+    left: 0;
+}
+.slick-prev:before, .slick-next:before{
+    font-size: 30px;
+    opacity: .5;
+}
